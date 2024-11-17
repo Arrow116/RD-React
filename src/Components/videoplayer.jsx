@@ -1,12 +1,21 @@
 import React, { useEffect, useRef } from "react";
 import Hls from "hls.js";
 
-const VideoPlayer = ({ videoUrl }) => {
+const VideoPlayer = ({ videoUrl, token }) => {
   const videoRef = useRef(null);
 
   useEffect(() => {
     if (Hls.isSupported()) {
-      const hls = new Hls();
+      const hls = new Hls(
+        {
+          debug: true,
+          lowLatencyMode: true,
+          licenseXhrSetup: (xhr) => {
+            xhr.withCredentials = true;
+            xhr.setRequestHeader("Authorization", "Bearer " + token);
+        },
+        }
+      );
       hls.loadSource(videoUrl);
       hls.attachMedia(videoRef.current);
       hls.on(Hls.Events.MANIFEST_PARSED, () => {
@@ -17,12 +26,13 @@ const VideoPlayer = ({ videoUrl }) => {
         hls.destroy();
       };
     } else if (videoRef.current.canPlayType('application/vnd.apple.mpegurl')) {
+      // For native HLS support (Safari, etc.)
       videoRef.current.src = videoUrl;
       videoRef.current.addEventListener('loadedmetadata', () => {
         videoRef.current.play();
       });
     }
-  }, [videoUrl]);
+  }, [videoUrl, token]);
 
   return (
     <div>
