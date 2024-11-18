@@ -1,6 +1,7 @@
 import Home from "./Components/home"
 import VideoPlayer from "./Components/videoplayer"
 import { createBrowserRouter, RouterProvider, Route, Link } from 'react-router-dom';
+import PTZ from "./pages/PTZ";
 
 
 // var Id ="1a09c074-48e2-a040-6702-90a531509525"
@@ -25,13 +26,8 @@ const router = createBrowserRouter([
     element: <VideoPlayer videoUrl={streamingUrl} token={"vms-711d2b593dd024a4e44d30f081174adf-FgvHY3Re9b"}/>
   },
   {
-    path: "about",
-    element: (
-      <>
-        <Link to="/">Home</Link>
-        <div>About</div>
-      </>
-    )
+    path: "/ptz",
+    element: <PTZ />
   }
 ])
 
